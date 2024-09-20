@@ -1,0 +1,58 @@
+﻿#!/bin/bash
+
+# Passo 1: Atualizar o sistema
+sudo yum update -y
+
+# Passo 2: Instalar Apache
+sudo yum install httpd -y
+
+# Iniciar o Apache
+sudo systemctl start httpd
+sudo systemctl enable httpd
+
+# Verificar status do Apache
+sudo systemctl status httpd
+
+# Passo 3: Criar diretório para armazenar logs no NFS
+
+sudo yum install nfs-utils -y
+
+# Após instalar o NFS, monte o diretório NFS no sistema. Você deve saber o endereço do servidor NFS
+e o caminho que deseja montar. A AWS usa o Amazon EFS (Elastic File System) como um serviço NFS.
+
+fs-0f778e97844321a74.efs.us-east-1.amazonaws.com:/ /mnt/nfs/fabio-veras nfs4 defaults 0 0
+
+# Depois de executar o comando de montagem, verifique se o NFS foi montado corretamente:
+
+df -h
+
+# Para garantir que o NFS seja montado automaticamente na inicialização, edite o arquivo /etc/fstab:
+
+mkdir fabio-veras
+
+# Passo 4: Criar script de monitoramento
+
+  #!/bin/bash
+
+SERVICE="httpd"
+STATUS=$(systemctl is-active $SERVICE)
+DATE=$(date '+%Y-%m-%d %H:%M:%S')
+DIR="/mnt/nfs/fabio-veras"
+
+if [ "$STATUS" = "active" ]; then
+    echo "$DATE - $SERVICE - ONLINE - APACHE está ONLINE" > $DIR/apache_online.txt
+else
+    echo "$DATE - $SERVICE - OFFLINE - APACHE está OFFLINE" > $DIR/apache_offline.txt
+fi  
+# Tornar o script executável
+sudo chmod +x $MONITOR_SCRIPT
+
+# Passo 5: Configurar o cron para rodar o script a cada 5 minutos
+CRON_JOB="*/5 * * * * $MONITOR_SCRIPT"
+
+# Adiciona o job ao crontab
+(crontab -l 2>/dev/null; echo "$CRON_JOB") | crontab -
+
+echo "Configuração de monitoramento pronta. O script será executado a cada 5 minutos."
+
+

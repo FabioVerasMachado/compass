@@ -1,0 +1,12 @@
+#!/bin/bash
+
+SERVICE="httpd"
+STATUS=$(systemctl is-active $SERVICE)
+DATE=$(date '+%Y-%m-%d %H:%M:%S')
+DIR="/mnt/nfs/fabio-veras"
+
+if [ "$STATUS" = "active" ]; then
+    echo "$DATE - $SERVICE - ONLINE - APACHE está ONLINE" > $DIR/apache_online.txt
+else
+    echo "$DATE - $SERVICE - OFFLINE - APACHE está OFFLINE" > $DIR/apache_offline.txt
+fi
