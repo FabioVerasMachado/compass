@@ -1,5 +1,5 @@
 # Atividade01-AWS
-![Logo da Empresa](./imagens/CompassUOL.jpeg)
+![Alt text](images/AWS.jpeg)
 
 :rocket: Primeira Tarefa do Estágio Compass-UOL DevSecOps AWS
 :page_facing_up: Descrição
