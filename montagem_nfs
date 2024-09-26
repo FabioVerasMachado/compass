@@ -1,0 +1,35 @@
+# Para garantir que o NFS seja montado automaticamente na inicialização:
+
+# Você deve adicionar uma entrada no /etc/fstab que especifique o diretório NFS, o ponto de montagem no sistema local, o tipo de sistema de arquivos, e as opções de montagem apropriadas.
+Passos:
+
+# Abrir o arquivo /etc/fstab com um editor de texto, como nano ou vim, com permissões de superusuário: 
+
+sudo nano /etc/fstab
+
+# Adicionar uma linha com os detalhes da montagem NFS. O formato é:
+
+
+[servidor NFS]:[diretório NFS] [ponto de montagem local] nfs defaults 0 0
+
+# Exemplo:
+#plaintext
+#192.168.0.100:/mnt/nfs /mnt/nfs nfs defaults 0 0
+
+#Onde:
+
+# 192.168.0.100:/mnt/nfs é o servidor NFS e o diretório que você deseja montar.
+# /mnt/nfs é o diretório local onde você deseja montar o sistema de arquivos.
+# nfs especifica o tipo de sistema de arquivos.
+  defaults são as opções padrão de montagem.
+#Os 0 0 no final são valores para dump e fsck (geralmente deixados como 0 para NFS).
+
+# Salvar o arquivo e sair do editor (no nano, use CTRL+X, depois Y   	para confirmar as mudanças).
+
+# Testar a montagem manualmente, sem reiniciar, para verificar se a entrada está correta:
+
+sudo mount -a
+
+# Se não houver mensagens de erro, o sistema de arquivos NFS foi 			 	 montado com sucesso.
+
+#Agora, toda vez que a instância for reiniciada, o NFS será montado automaticamente no ponto de montagem especificado.
